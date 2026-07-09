@@ -89,7 +89,7 @@ svg {
 }
 
 .btn:disabled svg {
-    fill: #250c00;
+    fill: #6e3015;
 }
 
 button:focus, .btn:focus {
