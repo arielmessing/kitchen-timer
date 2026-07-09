@@ -1,0 +1,97 @@
+* {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+html, body {
+    background-color: #050505;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: sans-serif;
+}
+
+.display-pane {
+    flex: 1;
+    display: flex;
+    height: 72%;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    padding: 20px;
+}
+
+svg {
+    width: 95%;
+    height: 100%;
+}
+
+.segment {
+    fill: #1c0900;
+    transition: all 0.1s ease;
+}
+
+.segment.on {
+    fill: #ff5500;
+    filter: drop-shadow(0px 0px 4px #ff5500);
+}
+
+.indicator {
+    fill: none;
+    stroke: #1c0900;
+    stroke-width: 1;
+    transition: all 0.1s ease;
+}
+
+.indicator.on {
+    stroke: #ff5500;
+}
+
+.control-panel {
+    display: flex;
+    height: 28%;
+    border-top: 3px solid #151515;
+    background-color: #0a0a0a;
+}
+
+.btn {
+    flex: 1;
+    background-color: #0d0d0d;
+    border: none;
+    border-right: 2px solid #151515;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn:last-child {
+    border-right: none;
+}
+
+.btn:active:not(:disabled) {
+    background-color: #1a1a1a;
+}
+
+.btn svg {
+    width: 45px;
+    height: 45px;
+    fill: #ff5500;
+}
+
+.btn:disabled {
+    cursor: default;
+}
+
+.btn:disabled svg {
+    fill: #250c00;
+}
+
+button:focus, .btn:focus {
+    outline: none !important;
+}

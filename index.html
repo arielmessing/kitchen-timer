@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Oven Clock</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+
+<div class="display-pane" id="display-pane">
+  <svg viewBox="0 0 380 140" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- Digit 1 -->
+    <g id="d1" transform="translate(10, 10)">
+      <path id="d1-a" class="segment" d="M 6 0 L 54 0 L 46 8 L 14 8 Z"/>
+      <path id="d1-b" class="segment" d="M 60 5 L 60 51 L 55 56 L 50 51 L 50 13 Z"/>
+      <path id="d1-c" class="segment" d="M 60 67 L 60 113 L 50 105 L 50 67 L 55 62 Z"/>
+      <path id="d1-d" class="segment" d="M 14 110 L 46 110 L 54 118 L 6 118 Z"/>
+      <path id="d1-e" class="segment" d="M 0 67 L 5 62 L 10 67 L 10 105 L 0 113 Z"/>
+      <path id="d1-f" class="segment" d="M 0 5 L 10 13 L 10 51 L 5 56 L 0 51 Z"/>
+      <path id="d1-g" class="segment" d="M 7 59 L 13 54 L 47 54 L 53 59 L 47 64 L 13 64 Z"/>
+    </g>
+
+    <!-- Digit 2 -->
+    <g id="d2" transform="translate(90, 10)">
+      <path id="d2-a" class="segment" d="M 6 0 L 54 0 L 46 8 L 14 8 Z"/>
+      <path id="d2-b" class="segment" d="M 60 5 L 60 51 L 55 56 L 50 51 L 50 13 Z"/>
+      <path id="d2-c" class="segment" d="M 60 67 L 60 113 L 50 105 L 50 67 L 55 62 Z"/>
+      <path id="d2-d" class="segment" d="M 14 110 L 46 110 L 54 118 L 6 118 Z"/>
+      <path id="d2-e" class="segment" d="M 0 67 L 5 62 L 10 67 L 10 105 L 0 113 Z"/>
+      <path id="d2-f" class="segment" d="M 0 5 L 10 13 L 10 51 L 5 56 L 0 51 Z"/>
+      <path id="d2-g" class="segment" d="M 7 59 L 13 54 L 47 54 L 53 59 L 47 64 L 13 64 Z"/>
+    </g>
+
+    <!-- Colon -->
+    <g id="colon" transform="translate(170, 0)">
+      <circle id="colon-top" cx="20" cy="42" r="6" class="segment"/>
+      <circle id="colon-bottom" cx="20" cy="78" r="6" class="segment"/>
+    </g>
+
+    <!-- Alarm -->
+    <path id="alarm-indicator" class="indicator"
+          transform="translate(178, 104)"
+          d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+
+    <!-- Digit 3 -->
+    <g id="d3" transform="translate(230, 10)">
+      <path id="d3-a" class="segment" d="M 6 0 L 54 0 L 46 8 L 14 8 Z"/>
+      <path id="d3-b" class="segment" d="M 60 5 L 60 51 L 55 56 L 50 51 L 50 13 Z"/>
+      <path id="d3-c" class="segment" d="M 60 67 L 60 113 L 50 105 L 50 67 L 55 62 Z"/>
+      <path id="d3-d" class="segment" d="M 14 110 L 46 110 L 54 118 L 6 118 Z"/>
+      <path id="d3-e" class="segment" d="M 0 67 L 5 62 L 10 67 L 10 105 L 0 113 Z"/>
+      <path id="d3-f" class="segment" d="M 0 5 L 10 13 L 10 51 L 5 56 L 0 51 Z"/>
+      <path id="d3-g" class="segment" d="M 7 59 L 13 54 L 47 54 L 53 59 L 47 64 L 13 64 Z"/>
+    </g>
+
+    <!-- Digit 4 -->
+    <g id="d4" transform="translate(310, 10)">
+      <path id="d4-a" class="segment" d="M 6 0 L 54 0 L 46 8 L 14 8 Z"/>
+      <path id="d4-b" class="segment" d="M 60 5 L 60 51 L 55 56 L 50 51 L 50 13 Z"/>
+      <path id="d4-c" class="segment" d="M 60 67 L 60 113 L 50 105 L 50 67 L 55 62 Z"/>
+      <path id="d4-d" class="segment" d="M 14 110 L 46 110 L 54 118 L 6 118 Z"/>
+      <path id="d4-e" class="segment" d="M 0 67 L 5 62 L 10 67 L 10 105 L 0 113 Z"/>
+      <path id="d4-f" class="segment" d="M 0 5 L 10 13 L 10 51 L 5 56 L 0 51 Z"/>
+      <path id="d4-g" class="segment" d="M 7 59 L 13 54 L 47 54 L 53 59 L 47 64 L 13 64 Z"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Permanent 3-Button Control Interface -->
+<div class="control-panel">
+  <button class="btn" id="btn-alarm">
+    <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+  </button>
+  <button class="btn" id="btn-minus" disabled>
+    <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+  </button>
+  <button class="btn" id="btn-plus" disabled>
+    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+  </button>
+</div>
+
+<script type="module" src="src/main.ts"></script>
+
+</body>
+</html>
