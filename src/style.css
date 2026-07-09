@@ -8,6 +8,7 @@ html, body {
     background-color: #050505;
     margin: 0;
     padding: 0;
+    width: 100vw;
     height: 100vh;
     overflow: hidden;
     display: flex;
@@ -23,12 +24,12 @@ html, body {
     justify-content: center;
     align-items: center;
     background-color: #000;
-    padding: 20px;
+    padding: 40px;
 }
 
 svg {
-    width: 95%;
-    height: 100%;
+    width: 100%;
+    height: auto;
 }
 
 .segment {
