@@ -20,7 +20,7 @@ const LONG_PRESS_INITIAL_DELAY = 500;
 
 const RETURN_TO_CLOCK_TIMEOUT = 4000;
 
-const OVEN_PITCH = 1050;
+const TIMER_BEEP_PITCH = 475;
 
 // Target DOM Elements
 const displayPane = document.getElementById("display-pane");
@@ -82,15 +82,15 @@ btnPlus.addEventListener('pointerdown', (e) => {
   increaseTimer();
 
   // Wait before starting the rapid repeat
-  initialTimeout = window.setTimeout(() => {
+  longPressInitialTimeout = window.setTimeout(() => {
     hasLongPressed = true;
 
-    repeatInterval = window.setInterval(() => {
+    longPressRepeatInterval = window.setInterval(() => {
       increaseTimer();
 
-    }, REPEAT_SPEED);
+    }, LONG_PRESS_REPEAT_SPEED);
 
-  }, INITIAL_DELAY);
+  }, LONG_PRESS_INITIAL_DELAY);
 });
 
 btnPlus.addEventListener('pointerup', stopCounting);
@@ -112,15 +112,15 @@ btnMinus.addEventListener("pointerdown", (e) => {
 
   decreaseTimer();
 
-  initialTimeout = window.setTimeout(() => {
+  longPressInitialTimeout = window.setTimeout(() => {
     hasLongPressed = true;
 
-    repeatInterval = window.setInterval(() => {
+    longPressRepeatInterval = window.setInterval(() => {
       decreaseTimer();
 
-    }, REPEAT_SPEED);
+    }, LONG_PRESS_REPEAT_SPEED);
 
-  }, INITIAL_DELAY);
+  }, LONG_PRESS_INITIAL_DELAY);
 });
 
 btnMinus.addEventListener('pointerup', stopCounting);
@@ -179,7 +179,7 @@ function playSingleBeep(startTime: number): void {
   const gainNode = audioCtx.createGain();
 
   osc.type = "sine";
-  osc.frequency.setValueAtTime(OVEN_PITCH, startTime);
+  osc.frequency.setValueAtTime(TIMER_BEEP_PITCH, startTime);
 
   gainNode.gain.setValueAtTime(0, startTime);
   gainNode.gain.linearRampToValueAtTime(0.6, startTime + 0.002);
@@ -306,6 +306,6 @@ function decreaseTimer() {
 }
 
 function stopCounting() {
-  if (initialTimeout) window.clearTimeout(initialTimeout);
-  if (repeatInterval) window.clearInterval(repeatInterval);
+  if (longPressInitialTimeout) window.clearTimeout(longPressInitialTimeout);
+  if (longPressRepeatInterval) window.clearInterval(longPressRepeatInterval);
 }
