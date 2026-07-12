@@ -20,7 +20,7 @@ const LONG_PRESS_INITIAL_DELAY = 500;
 
 const RETURN_TO_CLOCK_TIMEOUT = 4000;
 
-const OVEN_PITCH = 1050;
+const TIMER_BEEP_PITCH = 475;
 
 // Target DOM Elements
 const displayPane = document.getElementById("display-pane");
