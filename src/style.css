@@ -4,7 +4,8 @@
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-html, body {
+html,
+body {
     background-color: #050505;
     margin: 0;
     padding: 0;
@@ -57,43 +58,50 @@ svg {
 .control-panel {
     display: flex;
     height: 28%;
-    border-top: 3px solid #151515;
+    border-top: 3px solid #0d0d0d;
     background-color: #0a0a0a;
 }
 
 .btn {
     flex: 1;
-    background-color: #0d0d0d;
+    background-color: #0a0a0a;
     border: none;
-    border-right: 2px solid #151515;
+    border-right: 2px solid #0d0d0d;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: background-color 0.1s ease;
 }
 
 .btn:last-child {
     border-right: none;
 }
 
-.btn:active:not(:disabled) {
+.btn:not(:disabled):active {
     background-color: #1a1a1a;
 }
 
 .btn svg {
     width: 45px;
     height: 45px;
-    fill: #ff5500;
+    fill: #5a5a5a;
+    transition: fill 0.1s ease;
+}
+
+.btn:not(:disabled):active svg {
+    fill: #7a7a7a;
+}
+
+.btn:disabled svg {
+    fill: #2a2a2a;
 }
 
 .btn:disabled {
     cursor: default;
 }
 
-.btn:disabled svg {
-    fill: #6e3015;
-}
-
-button:focus, .btn:focus {
+button:focus,
+.btn:focus {
     outline: none !important;
 }
