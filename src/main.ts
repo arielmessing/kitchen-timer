@@ -1,10 +1,6 @@
-type DigitSegmentsMap = {
-  [key: string]: string[];
-}
+type DigitSegment = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g';
 
-const allSegments = ['a', 'b', 'c', 'd', 'e', 'f', 'g'] as const;
-
-const digitSegmentsMap: DigitSegmentsMap = {
+const DigitSegmentsRegistry: Record<string, DigitSegment[]> = {
   '0': ['a', 'b', 'c', 'd', 'e', 'f'],
   '1': ['b', 'c'],
   '2': ['a', 'b', 'g', 'e', 'd'],
@@ -16,6 +12,11 @@ const digitSegmentsMap: DigitSegmentsMap = {
   '8': ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
   '9': ['a', 'b', 'c', 'd', 'f', 'g']
 };
+
+const allSegments = ['a', 'b', 'c', 'd', 'e', 'f', 'g'] as const;
+
+const LONG_PRESS_REPEAT_SPEED = 200;
+const LONG_PRESS_INITIAL_DELAY = 500;
 
 const RETURN_TO_CLOCK_TIMEOUT = 4000;
 
@@ -32,6 +33,11 @@ const audioCtx: AudioContext = new AudioContext();
 // Global App State Variables
 let currentMode: "CLOCK" | "TIMER" | "ALARMING" = "CLOCK";
 let timerMinutes = 0;
+
+let longPressInitialTimeout: number | null = null;
+let longPressRepeatInterval: number | null = null;
+let hasLongPressed = false;
+
 let countdownInterval: number | null = null;
 let returnToClockTimeout: number | null = null;
 
@@ -64,36 +70,66 @@ btnAlarm?.addEventListener("click", () => {
   }
 });
 
-btnPlus?.addEventListener("click", () => {
-  if (currentMode !== "TIMER") return;
+btnPlus.addEventListener('pointerdown', (e) => {
+  // Prevents accidental text selection or zooming on mobile touch
+  e.preventDefault();
+
   stopAlarm();
 
-  timerMinutes++;
-  updateDisplay();
-  startTimerCounting();
-  scheduleReturnToClock();
+  hasLongPressed = false;
+
+  // Initial immediate increment
+  increaseTimer();
+
+  // Wait before starting the rapid repeat
+  initialTimeout = window.setTimeout(() => {
+    hasLongPressed = true;
+
+    repeatInterval = window.setInterval(() => {
+      increaseTimer();
+
+    }, REPEAT_SPEED);
+
+  }, INITIAL_DELAY);
 });
 
-btnMinus?.addEventListener("click", () => {
-  if (currentMode !== "TIMER") return;
+btnPlus.addEventListener('pointerup', stopCounting);
+btnPlus.addEventListener('pointerleave', stopCounting);
+btnPlus.addEventListener('pointercancel', stopCounting); // Crucial for mobile touch
+
+btnPlus.addEventListener("click", (e) => {
+  if (hasLongPressed) {
+    e.preventDefault();
+  }
+});
+
+btnMinus.addEventListener("pointerdown", (e) => {
+  e.preventDefault();
+
   stopAlarm();
 
-  if (timerMinutes > 0) {
-    timerMinutes--;
-    updateDisplay();
+  hasLongPressed = false;
 
-    if (timerMinutes === 0) {
-      if (countdownInterval) {
-        window.clearInterval(countdownInterval);
-        countdownInterval = null;
-      }
-      currentMode = "ALARMING";
-      updateDisplay();
-      startAlarm();
-    } else {
-      startTimerCounting();
-      scheduleReturnToClock();
-    }
+  decreaseTimer();
+
+  initialTimeout = window.setTimeout(() => {
+    hasLongPressed = true;
+
+    repeatInterval = window.setInterval(() => {
+      decreaseTimer();
+
+    }, REPEAT_SPEED);
+
+  }, INITIAL_DELAY);
+});
+
+btnMinus.addEventListener('pointerup', stopCounting);
+btnMinus.addEventListener('pointerleave', stopCounting);
+btnMinus.addEventListener('pointercancel', stopCounting);
+
+btnMinus.addEventListener("click", (e) => {
+  if (hasLongPressed) {
+    e.preventDefault();
   }
 });
 
@@ -114,7 +150,7 @@ function setSegmentState(digitId: string, segment: string, isOn: boolean): void 
 }
 
 function drawDigit(digitId: string, value: string): void {
-  const activeSegments = digitSegmentsMap[value] || [];
+  const activeSegments = DigitSegmentsRegistry[value] || [];
 
   for (const segment of allSegments) {
     setSegmentState(digitId, segment, activeSegments.includes(segment));
@@ -178,41 +214,36 @@ function stopAlarm(): void {
 }
 
 function updateDisplay(): void {
+  let hours2Digits: string,
+      minutes2Digits: string;
+
+  let showColon = true;
+
   if (currentMode === "CLOCK") {
-    if (btnMinus) btnMinus.disabled = true;
-    if (btnPlus) btnPlus.disabled = true;
-
     const now = new Date();
-    const hStr = now.getHours().toString().padStart(2, '0');
-    const mStr = now.getMinutes().toString().padStart(2, '0');
+    hours2Digits = now.getHours().toString().padStart(2, '0');
+    minutes2Digits = now.getMinutes().toString().padStart(2, '0');
 
-    drawDigit("d1", hStr[0]);
-    drawDigit("d2", hStr[1]);
+    showColon = now.getSeconds() % 2 === 0;
 
-    setColon(now.getSeconds() % 2 === 0);
-    setIndicator();
-
-    drawDigit("d3", mStr[0]);
-    drawDigit("d4", mStr[1]);
-
-  } else if (currentMode === "TIMER" || currentMode === "ALARMING") {
-    if (btnMinus) btnMinus.disabled = false;
-    if (btnPlus) btnPlus.disabled = false;
-
+  } else {
     const hoursOut = Math.floor(timerMinutes / 60);
     const minsOut = timerMinutes % 60;
-    const hStr = hoursOut.toString().padStart(2, '0');
-    const mStr = minsOut.toString().padStart(2, '0');
-
-    drawDigit("d1", hStr[0]);
-    drawDigit("d2", hStr[1]);
-
-    setColon(true);
-    setIndicator();
-
-    drawDigit("d3", mStr[0]);
-    drawDigit("d4", mStr[1]);
+    hours2Digits = hoursOut.toString().padStart(2, '0');
+    minutes2Digits = minsOut.toString().padStart(2, '0');
   }
+
+  drawDigit("d1", hours2Digits[0]);
+  drawDigit("d2", hours2Digits[1]);
+
+  setColon(showColon);
+  setIndicator();
+
+  drawDigit("d3", minutes2Digits[0]);
+  drawDigit("d4", minutes2Digits[1]);
+
+  btnMinus.disabled = currentMode === "CLOCK" || timerMinutes === 0;
+  btnPlus.disabled = currentMode === "CLOCK";
 }
 
 function startTimerCounting(): void {
@@ -245,4 +276,36 @@ function scheduleReturnToClock(): void {
       updateDisplay();
     }
   }, RETURN_TO_CLOCK_TIMEOUT);
+}
+
+function increaseTimer() {
+  timerMinutes++;
+  updateDisplay();
+  startTimerCounting();
+  scheduleReturnToClock();
+}
+
+function decreaseTimer() {
+  if (timerMinutes > 0) {
+    timerMinutes--;
+    updateDisplay();
+
+    if (timerMinutes === 0) {
+      if (countdownInterval) {
+        window.clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+      currentMode = "ALARMING";
+      updateDisplay();
+      startAlarm();
+    } else {
+      startTimerCounting();
+      scheduleReturnToClock();
+    }
+  }
+}
+
+function stopCounting() {
+  if (initialTimeout) window.clearTimeout(initialTimeout);
+  if (repeatInterval) window.clearInterval(repeatInterval);
 }
